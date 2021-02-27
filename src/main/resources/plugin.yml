@@ -4,6 +4,7 @@ description: An Easter Egg Hunt minigame for the Easter break in collaberation w
 version: ${project.version}
 author: Crafting For Christ, Ben Robson
 api-version: 1.16
+softdepend: [HolographicDisplays]
 
 commands:
   egg:

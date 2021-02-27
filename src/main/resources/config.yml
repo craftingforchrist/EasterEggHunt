@@ -4,6 +4,11 @@ DATABASE:
   DATABASE: "EasterEggHunt"
   USERNAME: "root"
   PASSWORD: "root"
+EGG:
+  LEADERBOARD:
+    X: 0
+    Y: 100
+    Z: 0
 LANG:
   DATABASE:
     CONNECTIONERROR: "&cA database error has occurred, please contact an Administrator."

@@ -5,6 +5,7 @@ import net.craftingforchrist.EasterEggHunt.commands.egg;
 import net.craftingforchrist.EasterEggHunt.events.EggFindEvent;
 import net.craftingforchrist.EasterEggHunt.events.EggHunterOnJoin;
 import net.craftingforchrist.EasterEggHunt.events.EggMilestoneReachedEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,11 +17,14 @@ import java.sql.SQLException;
 public class EasterEggHuntMain extends JavaPlugin {
     public static EasterEggHuntMain plugin;
     private Connection connection;
+    private boolean useHolographicDisplays;
 
     @Override
     public void onEnable() {
         plugin = this;
 
+        plugin.saveDefaultConfig(); // Generate configuration file
+        useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
         establishConnection(); // Connect to the database
 
         // Plugin Load Message
@@ -36,7 +40,7 @@ public class EasterEggHuntMain extends JavaPlugin {
         this.getCommand("egg").setExecutor(new egg(this));
         this.getCommand("clearegg").setExecutor(new clearegg(this));
 
-        plugin.saveDefaultConfig(); // Generate configuration file
+        EggHolographicLeaderboard.HoloLeaderDisplay();
     }
 
     @Override
@@ -52,7 +56,13 @@ public class EasterEggHuntMain extends JavaPlugin {
             plugin.getLogger().info(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("LANG.DATABASE.CONNECTIONSUCCESS")));
         } catch (SQLException e) {
             plugin.getLogger().info(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("LANG.DATABASE.CONNECTIONERROR")));
+
+//            getLogger().severe("*** A MySQL database is required for the function of this plugin. ***");
+//            getLogger().severe("*** This plugin will be disabled. ***");
+//            this.setEnabled(false);
+
             e.printStackTrace();
+            return;
         } catch (ClassNotFoundException e) {
             plugin.getLogger().info(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("LANG.DATABASE.CONNECTIONERROR")));
             e.printStackTrace();
