@@ -1,5 +1,8 @@
 package net.craftingforchrist.EasterEggHunt;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import net.craftingforchrist.EasterEggHunt.commands.clearegg;
 import net.craftingforchrist.EasterEggHunt.commands.egg;
 import net.craftingforchrist.EasterEggHunt.events.EggFindEvent;
@@ -7,12 +10,12 @@ import net.craftingforchrist.EasterEggHunt.events.EggHunterOnJoin;
 import net.craftingforchrist.EasterEggHunt.events.EggMilestoneReachedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class EasterEggHuntMain extends JavaPlugin {
     public static EasterEggHuntMain plugin;
@@ -40,7 +43,59 @@ public class EasterEggHuntMain extends JavaPlugin {
         this.getCommand("egg").setExecutor(new egg(this));
         this.getCommand("clearegg").setExecutor(new clearegg(this));
 
-        EggHolographicLeaderboard.HoloLeaderDisplay();
+
+
+
+
+
+
+
+
+
+        int HoloLeaderboardx = plugin.getConfig().getInt("EGG.LEADERBOARD.X");
+        int HoloLeaderboardy = plugin.getConfig().getInt("EGG.LEADERBOARD.Y");
+        int HoloLeaderboardz = plugin.getConfig().getInt("EGG.LEADERBOARD.Z");
+
+        Location HoloLeaderboardLocation = new Location(Bukkit.getWorld("world"), HoloLeaderboardx, HoloLeaderboardy, HoloLeaderboardz);
+        Hologram Hologram = HologramsAPI.createHologram(plugin, HoloLeaderboardLocation);
+
+        TextLine BoardTitle = Hologram.insertTextLine(0, "Leaderboard Title");
+        TextLine firstplace = Hologram.insertTextLine(1, "1st Place: ");
+        TextLine secondplace = Hologram.insertTextLine(2, "2nd Place: ");
+        TextLine thirdplace = Hologram.insertTextLine(3, "3rd Place: ");
+
+        BukkitScheduler scheduler = plugin.getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                // What you want to schedule goes here
+                plugin.getServer().broadcastMessage("Welcome to Bukkit! Remember to read the documentation!");
+
+                //
+                // Database Query
+                // Check how many eggs the player has collected.
+                //
+                try {
+                    PreparedStatement findstatement = plugin.getConnection().prepareStatement("SELECT playerdata.username as 'username', COUNT(*) as 'eggs' FROM eastereggs left join playerdata on playerdata.id = eastereggs.playerid group by playerdata.username LIMIT 3;");
+
+                    ResultSet results = findstatement.executeQuery();
+                    if (results.next()) {
+                        int id = results.getRow();
+                        String username = results.getString(1);
+                        String eggs = results.getString(2);
+
+                        while (results.next()) {
+                            Hologram.appendTextLine("firstplace").setText("1st Place: " + username + " :: " + eggs);
+                            Hologram.appendTextLine("secondplace").setText("2nd Place: " + username + " :: " + eggs);
+                            Hologram.appendTextLine("thirdplace").setText("3rd Place: " + username + " :: " + eggs);
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    plugin.getLogger().info(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("LANG.DATABASE.CONNECTIONERROR")));
+                }
+            }
+        }, 0L, 20L);
     }
 
     @Override
