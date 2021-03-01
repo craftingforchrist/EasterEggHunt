@@ -59,7 +59,7 @@ public class EasterEggHuntMain extends JavaPlugin {
         Location HoloLeaderboardLocation = new Location(Bukkit.getWorld("world"), HoloLeaderboardx, HoloLeaderboardy, HoloLeaderboardz);
         Hologram Hologram = HologramsAPI.createHologram(plugin, HoloLeaderboardLocation);
 
-        TextLine BoardTitle = Hologram.insertTextLine(0, "Leaderboard Title");
+        TextLine BoardTitle = Hologram.insertTextLine(0, ChatColor.translateAlternateColorCodes('&', "&e&lEgg Hunter Leaderboard"));
         TextLine firstplace = Hologram.insertTextLine(1, "1st Place: ");
         TextLine secondplace = Hologram.insertTextLine(2, "2nd Place: ");
         TextLine thirdplace = Hologram.insertTextLine(3, "3rd Place: ");
@@ -68,9 +68,6 @@ public class EasterEggHuntMain extends JavaPlugin {
         scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
             @Override
             public void run() {
-                // What you want to schedule goes here
-                plugin.getServer().broadcastMessage("Welcome to Bukkit! Remember to read the documentation!");
-
                 //
                 // Database Query
                 // Check how many eggs the player has collected.
@@ -79,16 +76,16 @@ public class EasterEggHuntMain extends JavaPlugin {
                     PreparedStatement findstatement = plugin.getConnection().prepareStatement("SELECT playerdata.username as 'username', COUNT(*) as 'eggs' FROM eastereggs left join playerdata on playerdata.id = eastereggs.playerid group by playerdata.username LIMIT 3;");
 
                     ResultSet results = findstatement.executeQuery();
-                    if (results.next()) {
-                        int id = results.getRow();
-                        String username = results.getString(1);
-                        String eggs = results.getString(2);
+                    int id = results.getRow();
+                    String username = results.getString(1);
+                    String eggs = results.getString(2);
 
-                        while (results.next()) {
-                            Hologram.appendTextLine("firstplace").setText("1st Place: " + username + " :: " + eggs);
-                            Hologram.appendTextLine("secondplace").setText("2nd Place: " + username + " :: " + eggs);
-                            Hologram.appendTextLine("thirdplace").setText("3rd Place: " + username + " :: " + eggs);
-                        }
+                    if (results.next()) {
+                        firstplace.setText("1st Place: " + username + " :: " + eggs);
+                        secondplace.setText("2nd Place: " + username + " :: " + eggs);
+                        thirdplace.setText("3rd Place: " + username + " :: " + eggs);
+
+                        results.next();
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();

@@ -2,6 +2,10 @@
 Maintained By: [Ben Robson](https://github.com/benrobson) <br>
 <i>The Easter Egg Hunt is an Easter Break Hub event and a collaboration with KEC (Katoomba Easter Convention).</i>
 
+## Features
+### Leaderboard
+Using HolographicDisplays API, you can set the coordinates for a leaderboard to be displayed in `EGG.LEADERBOARD` which will display the top 3 people with the most amount of eggs.
+
 ## Gameplay
 When a player right clicks a Player Head, the coordinates are logged in a database and a number incremented in their name.
 
