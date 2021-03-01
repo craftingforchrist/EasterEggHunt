@@ -73,14 +73,26 @@ public class EasterEggHuntMain extends JavaPlugin {
                 // Check how many eggs the player has collected.
                 //
                 try {
-                    PreparedStatement findstatement = plugin.getConnection().prepareStatement("SELECT playerdata.username as 'username', COUNT(*) as 'eggs' FROM eastereggs left join playerdata on playerdata.id = eastereggs.playerid group by playerdata.username LIMIT 3;");
+                    PreparedStatement findstatement = plugin.getConnection().prepareStatement("SELECT playerdata.username as 'username', COUNT(*) as 'eggs' FROM eastereggs left join playerdata on playerdata.id = eastereggs.playerid group by playerdata.username LIMIT 3;", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
                     ResultSet results = findstatement.executeQuery();
-                    int id = results.getRow();
-                    String username = results.getString(1);
-                    String eggs = results.getString(2);
 
                     if (results.next()) {
+                        int rowCount = results.last() ? results.getRow() : 0;
+                        String username = results.getString(1);
+                        String eggs = results.getString(2);
+
+//                        while(results.next()) {
+//                            for(int i = 1; i<=rowCount; i++) {
+//
+//                            }
+//                        }
+
+                        do{
+                            Bukkit.getPlayer("shadowolfyt").sendMessage(results.getString(1)+","+results.getString(2));
+                        } while(results.next());
+
+
                         firstplace.setText("1st Place: " + username + " :: " + eggs);
                         secondplace.setText("2nd Place: " + username + " :: " + eggs);
                         thirdplace.setText("3rd Place: " + username + " :: " + eggs);
