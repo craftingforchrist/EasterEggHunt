@@ -1,30 +1,23 @@
-//package net.craftingforchrist.EasterEggHunt;
-//
-//import org.bukkit.configuration.file.FileConfiguration;
-//
-//public class Variables {
-//    private static EasterEggHuntMain plugin;
-//    public Variables(EasterEggHuntMain plugin) {
-//        this.plugin = plugin;
-//    }
-//
-//    private FileConfiguration config;
-//
-//    public Variables(FileConfiguration config) { this.config = config; }
-//
-////    FileConfiguration config = plugin.getConfig();
-//
-//    // Database
-//    static String host = plugin.getConfig().getString("database.host");
-//    String port = config.getString("database.port");
-//    String database = config.getString("database.database");
-//    String username = config.getString("database.username");
-//    String password = config.getString("database.password");
-//
-//    // Egg
-//    String EGGTOTAL = String.valueOf(config.get("EGG.EGGTOTAL"));
-//
-//    // Sounds
-//
-//    // Lang
-//}
+package net.craftingforchrist.EasterEggHunt;
+
+public class Variables {
+    private static EasterEggHuntMain plugin;
+
+    public static String DATABASEHOST;
+    public static String DATABASEPORT;
+    public static String DATABASEDATABASE;
+    public static String DATABASEUSERNAME;
+    public static String DATABASEPASSWORD;
+
+
+    public void Variables(EasterEggHuntMain plugin) {
+        this.plugin = plugin;
+
+        // Database
+        DATABASEHOST = plugin.getConfig().getString("DATABASE.HOST");
+        DATABASEPORT = plugin.getConfig().getString("DATABASE.PORT");
+        DATABASEDATABASE = plugin.getConfig().getString("DATABASE.DATABASE");
+        DATABASEUSERNAME = plugin.getConfig().getString("DATABASE.USERNAME");
+        DATABASEPASSWORD = plugin.getConfig().getString("DATABASE.PASSWORD");
+    }
+}

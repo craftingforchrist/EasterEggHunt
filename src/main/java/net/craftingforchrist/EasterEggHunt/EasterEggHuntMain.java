@@ -26,7 +26,7 @@ public class EasterEggHuntMain extends JavaPlugin {
         plugin = this;
         plugin.saveDefaultConfig(); // Generate configuration file
 
-//        Variables Variables = new Variables(this);
+        Variables Variables = new Variables();
         EggController EggController = new EggController(this);
         EggChatController EggChatController = new EggChatController(this);
 
@@ -56,7 +56,7 @@ public class EasterEggHuntMain extends JavaPlugin {
     public void establishConnection() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            plugin.connection = DriverManager.getConnection("jdbc:mysql://" + plugin.getConfig().getString("DATABASE.HOST") + ":" + plugin.getConfig().getString("DATABASE.PORT") + "/" + plugin.getConfig().getString("DATABASE.DATABASE"), plugin.getConfig().getString("DATABASE.USERNAME"), plugin.getConfig().getString("DATABASE.PASSWORD"));
+            plugin.connection = DriverManager.getConnection("jdbc:mysql://" + Variables.DATABASEHOST + ":" + Variables.DATABASEPORT + "/" + Variables.DATABASEDATABASE, Variables.DATABASEUSERNAME, Variables.DATABASEPASSWORD);
             plugin.getLogger().info(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("LANG.DATABASE.CONNECTIONSUCCESS")));
         } catch (SQLException e) {
             plugin.getLogger().info(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("LANG.DATABASE.CONNECTIONERROR")));
