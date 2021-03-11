@@ -1,5 +1,7 @@
 package net.craftingforchrist.EasterEggHunt;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -17,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,6 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class EggController {
     private static EasterEggHuntMain plugin;
@@ -134,6 +138,18 @@ public class EggController {
         Location EggBlockLocation = new Location(Bukkit.getWorld("world"), x, y, z);
         EggBlockLocation.getBlock().setType(EggMaterialBlock);
         EggBlockLocation.getBlock().setBlockData(blockData);
+
+        if (EggBlockLocation.getBlock() instanceof Skull) {
+            String skinValue = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTFiOTgwM2ZjMGJmNDY3NTU5ZDVjYjRmNGFiMzM5YzliMDk3ZWE0YTgyYzVhMmE1MjZlOGIwMDkyNGQzZTM0NSJ9fX0=";
+
+            PlayerProfile profile = Bukkit.getServer().createProfile(UUID.randomUUID());
+            profile.setProperty(new ProfileProperty("textures", skinValue));
+
+            Block EggBlock = EggBlockLocation.getBlock();
+            Skull skull = (Skull) EggBlock.getState();
+            skull.setPlayerProfile(profile);
+            skull.update(true);
+        }
     }
 
     public static void insertCollectedEgg(Player player, Block block, int x, int y, int z) {
